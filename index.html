@@ -21,18 +21,28 @@
             const url = `https://app.rakuten.co.jp/services/api/Recipe/Search/20170426?applicationId=${appId}&keyword=${keyword}&format=json`;
 
             fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    const recipes = data.items;
-                    const recipeList = document.getElementById('recipeList');
-                    recipeList.innerHTML = ''; // 前回の検索結果をクリア
-                    recipes.forEach(recipe => {
-                        const li = document.createElement('li');
-                        li.innerHTML = `<strong>${recipe.recipeName}</strong> <br> <a href="${recipe.recipeUrl}" target="_blank">レシピを見る</a>`;
-                        recipeList.appendChild(li);
-                    });
-                })
-                .catch(error => console.error('エラーが発生しました: ', error));
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);  // レスポンス全体を確認
+        const recipes = data.items;
+
+        // レシピがない場合はエラーメッセージを表示
+        if (!recipes || recipes.length === 0) {
+            const recipeList = document.getElementById('recipeList');
+            recipeList.innerHTML = '<li>レシピが見つかりませんでした。</li>';
+            return;
+        }
+
+        // レシピがあればリストを表示
+        const recipeList = document.getElementById('recipeList');
+        recipeList.innerHTML = ''; // 前回の検索結果をクリア
+        recipes.forEach(recipe => {
+            const li = document.createElement('li');
+            li.innerHTML = `<strong>${recipe.recipeName}</strong> <br> <a href="${recipe.recipeUrl}" target="_blank">レシピを見る</a>`;
+            recipeList.appendChild(li);
+        });
+    })
+    .catch(error => console.error('エラーが発生しました: ', error));
         }
     </script>
 </body>
